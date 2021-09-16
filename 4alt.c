@@ -9,7 +9,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #define ERROR 6
 
@@ -274,7 +273,7 @@ void Make_new_coefficients (double* coef_a, double* coef_b, double* coef_c)
     *coef_a = (*coef_a)/(max_coef);
     *coef_b = (*coef_b)/(max_coef);
     *coef_c = (*coef_c)/(max_coef);
-    printf ("%f\n", &max_coef);
+    printf ("%f\n", max_coef);
 }
 
 void Solve_quadratic (double coef_a, double coef_b, double coef_c, double discriminant, double* root_1, double* root_2, int* case_of_solution)
