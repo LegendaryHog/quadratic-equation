@@ -222,7 +222,7 @@ void Introduction (void)
 
 int Start_or_not (void)
 {
-    int user_choice_1;
+    int user_choice_1 = 0;
 
     user_choice_1 = Get_user_choice ();
     switch (user_choice_1) {
@@ -254,6 +254,7 @@ double Scan_one_coefficient (char coef_name [8])
 {
     double coef = 0;
     bool input_check = true;
+
 
     while (input_check)
     {
@@ -323,7 +324,7 @@ void Output_solution (double root_1, double root_2, int case_of_solution)
 
 int Continue_or_not (void)
 {
-    int user_choice_2;
+    int user_choice_2 = 0;
 
     printf ("\n\nDo you want solve one more equation with me?\n If Yes, print: 1\n  If No, print: 0\n ");
     user_choice_2 = Get_user_choice ();
@@ -345,7 +346,7 @@ int Continue_or_not (void)
 int Get_user_choice (void)
 {
     bool input_error = true, one_or_zero = true;
-    int num;
+    int num = 0;
 
     while (input_error)
     {
@@ -411,12 +412,17 @@ void Make_new_coefficients (double* coef_a, double* coef_b, double* coef_c)
     assert (coef_a != coef_b);
     assert (coef_b != coef_c);
     assert (coef_c != coef_a);
+    assert (coef_a != 0);
+    assert (coef_b != 0);
+    assert (coef_c != 0);
 }
 
 void Solve_quadratic (double coef_a, double coef_b, double coef_c, double* root_1, double* root_2, int* case_of_solution)
 {
     double sqrt_discriminant = 0;
     double discriminant = Find_the_discriminant (coef_a, coef_b, coef_c);
+
+    assert (isfinite (discriminant) == 1);
 
     if (discriminant < 0)
     {
@@ -442,8 +448,11 @@ void Solve_quadratic (double coef_a, double coef_b, double coef_c, double* root_
             else
                 *case_of_solution = 5;
         }
-
+        assert (case_of_solution != 0);
         assert (root_1 != root_2);
+        assert (root_1 != 0);
+        assert (isfinite (*root_1) == 1);
+        assert (isfinite (*root_2) == 1);
 }
 
 double Find_the_discriminant (double coef_a, double coef_b, double coef_c)
@@ -470,7 +479,8 @@ void Solve_linear (double coef_b, double coef_c, double* root_1, int* case_of_so
             }
             *case_of_solution = 2;
     }
-    assert (isfinite (*root_1) != 0);
+    assert (isfinite (*root_1) == 1);
+    assert (case_of_solution != 0);
 }
 
 int Zero_check (double var)
