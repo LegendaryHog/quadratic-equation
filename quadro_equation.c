@@ -19,7 +19,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
-#define ERROR 6
 
 
 
@@ -36,7 +35,7 @@ struct test_data {
     double root_1;///< first root if it exist, else - 0
     double root_2;///< second root if it exist, else - 0
 
-    int case_of_solution;///< situation of solutiion
+    int case_of_solution;///< situation of solutiion (look at description of function "Solve_equation()")
 };
 
 struct test_data test[10] = {
@@ -118,7 +117,7 @@ Function that get only "1" or "0".
 int Get_user_choice (void);
 
 /*!
-Function that find greatest for absolute value coefficient divide all coefficients on max coefficient
+Function that find greatest of absolute value coefficient and divide all coefficients on that coefficient
 \param coef_a, coef_b, coef_c - addresses of coefficients of equation
 */
 void Make_new_coefficients (double* coef_a, double* coef_b, double* coef_c);
@@ -171,7 +170,7 @@ void Unit_test (struct test_data test, int* test_counter);
 
 /*!
 Function that check equality of two numbers of type double.
-\param var1, var2 variables
+\param var1, var2 - variables
 \return
 0 - if numbers aren't equal\n
 1 - if numbers are equal
