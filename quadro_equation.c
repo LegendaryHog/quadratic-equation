@@ -7,11 +7,12 @@
 
 
 /*!
+\title
     \author Kuteinikov SirGay
     \version 3.6
-    \date 04.10.2021
-*/
+    \date 25.09.2021
 
+*/
 
 
 #include <stdio.h>
@@ -19,6 +20,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
+
+
 
 
 
@@ -35,7 +38,7 @@ struct test_data {
     double root_1;///< first root if it exist, else - 0
     double root_2;///< second root if it exist, else - 0
 
-    int case_of_solution;///< situation of solutiion (look at description of function "Solve_equation()")
+    int case_of_solution;///< situation of solutiion
 };
 
 struct test_data test[10] = {
@@ -79,7 +82,7 @@ Function that checks input (and repeats him if necessary) and returns right coef
 double Scan_one_coefficient (char coef_name [8]);
 
 /*!
-Function that solves equation by "Solve_quadratic" and "Solve_linear" and determines roots and case of solution.
+Function that solves equation by "Solve_quadratic ()" and "Solve_linear ()" and determines roots and case of solution.
 \param coef_a, coef_b, coef_c - values of coefficients
 \param root_1, root_2 - addresses od roots
 \param case_of_solution - the parameter situation of solution:\n
@@ -188,7 +191,7 @@ void Run_unit_test (void);
 int main (void)
 {
     double coef_a = 0, coef_b = 0, coef_c = 0, root_1 = 0, root_2 = 0;
-    int case_of_solution = ERROR;
+    int case_of_solution =6;// 6 is error number
 
     Run_unit_test ();
 
@@ -377,6 +380,7 @@ int Get_user_choice (void)
             }
         }
     }
+
     return num;
 }
 
@@ -450,8 +454,8 @@ void Solve_quadratic (double coef_a, double coef_b, double coef_c, double* root_
         assert (case_of_solution != 0);
         assert (root_1 != root_2);
         assert (root_1 != 0);
-        assert (isfinite (*root_1) == 1);
-        assert (isfinite (*root_2) == 1);
+        assert (isfinite (*root_1) != 0);
+        assert (isfinite (*root_2) != 0);
 }
 
 double Find_the_discriminant (double coef_a, double coef_b, double coef_c)
@@ -478,7 +482,7 @@ void Solve_linear (double coef_b, double coef_c, double* root_1, int* case_of_so
             }
             *case_of_solution = 2;
     }
-    assert (isfinite (*root_1) == 1);
+    assert (isfinite (*root_1) != 0);
     assert (case_of_solution != 0);
 }
 
@@ -486,14 +490,7 @@ int Zero_check (double var)
 {
     const double epsilon = 1e-6;
 
-    if (fabs (var) < epsilon)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return fabs (var) < epsilon;
 }
 
 void Clear_buffer (void)
@@ -545,16 +542,9 @@ void Unit_test (struct test_data test, int* test_counter)
 
 int Double_epsilon_check (double var_1, double var_2)
 {
-    const double epsilon1 = 1e-6;
+    const double epsilon = 1e-6;
 
-    if (fabs(var_1-var_2) < epsilon1)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return fabs(var_1-var_2) < epsilon;
 }
 
 void Run_unit_test (void)
