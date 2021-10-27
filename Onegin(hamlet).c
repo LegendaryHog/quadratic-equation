@@ -3,112 +3,153 @@
 #include <assert.h>
 #include <stdlib.h>
 
-void From_File_to_str (char** ptr_ptrOneg);
+#define $meow printf("Meow from %s(%d)%s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 
-unsigned Index_Make (char* ptrOneg, char*** ptrIndex);
+#define SYMBOL_IS_USELESS *str == 'S' || *str == 'c' || *str == 'e' || *str == 'n' || *str == 'M' || *str == 'V' || *str == 'L' || *str == 'X' || *str == 'I' || *str == ' ' || *str == 'A' || *str == 'C'
 
-void Str_Sort (char* Index[], unsigned indexsize);
+char* From_File_to_buffer (void);
 
-int Str_Compare (char* str1, char* str2);
+char** Index_Make (char* ptrBuff, size_t* indexsize);
 
-void Output_to_File (char* Index[], unsigned indexsize);
+void Str_bubble_Sort (char* Index[], size_t indexsize);
 
-unsigned Find_indexsize (char* ptrOneg);
+int Str_Compare (const char* str1, const char* str2);
+
+void Output_to_File (char* Index[], size_t indexsize);
+
+size_t Find_indexsize_and_str_make (char* ptrBuff);
+
+char* Str_platinum (const char* str);
+
+char Small_equal_Big (char c);
+
+int Is_malloc (const char* str);
+
+
 
 
 int main (void)
 {
-    unsigned indexsize = 0;
-    char** Index = NULL;
-    char* ptrOneg = NULL;
+    size_t indexsize = 0;
+    char* ptrBuff = From_File_to_buffer ();
+    assert (ptrBuff != NULL);
 
-    From_File_to_str (&ptrOneg);
-    assert (ptrOneg != NULL);
 
-    indexsize = Index_Make (ptrOneg, &Index);
+    char** Index = Index_Make (ptrBuff, &indexsize);
     assert (Index != NULL);
 
-    Str_Sort (Index, indexsize);
+    Str_bubble_Sort (Index, indexsize);
+
     Output_to_File (Index, indexsize);
 
-    free (ptrOneg);
+    free (ptrBuff);
 
     return 0;
 }
 
-void From_File_to_str (char** ptr_ptrOneg)
+char* From_File_to_buffer (void)
 {
-    FILE* onegin = fopen ("onegin.txt", "r");
-    assert (onegin != NULL);
+    FILE* buffer = fopen ("hamlet.txt", "r");
+    assert (buffer != NULL);
 
-    long int start_of_File = ftell (onegin);
-    fseek(onegin, start_of_File, SEEK_END);
-    long int end_of_File = ftell (onegin);
-    fseek(onegin, start_of_File, SEEK_SET);
-    long int size_File = end_of_File - start_of_File;
+    fseek(buffer, 0, SEEK_SET);
+    long start_of_File = ftell (buffer);
 
-    printf ("%ld\n", size_File);
+    fseek(buffer, 0, SEEK_END);
+    long end_of_File = ftell (buffer);
 
-    *ptr_ptrOneg = (char*) calloc (size_File, sizeof (char));
-    assert (*ptr_ptrOneg != NULL);
+    fseek(buffer, 0, SEEK_SET);
+    long size_File = end_of_File - start_of_File;
 
-    long int  real_size_File = fread (*ptr_ptrOneg, sizeof (char), size_File, onegin);
+    char* ptrBuff = (char*) calloc (size_File + 1, sizeof (char));
+    assert (ptrBuff != NULL);
 
-    fclose (onegin);
-    printf ("%ld\n", real_size_File);
+    long real_size_File = fread (ptrBuff + 1, sizeof (char), size_File, buffer);
 
-    *(*ptr_ptrOneg + real_size_File) = '\0';
+    fclose (buffer);
 
-    *ptr_ptrOneg = (char*) realloc ((void*)*ptr_ptrOneg, real_size_File + 1);
-    assert (*ptr_ptrOneg != NULL);
+    *ptrBuff = '\n';
+    *(ptrBuff + real_size_File) = '\0';
+
+    ptrBuff = (char*) realloc (ptrBuff, real_size_File + 2);
+    assert (ptrBuff != NULL);
+
+    return (char*)ptrBuff;
 }
 
-unsigned Index_Make (char* ptrOneg, char*** ptrIndex)
+char** Index_Make (char* ptrBuff, size_t* indexsize)
 {
-    unsigned i = 1;
+    size_t i = 0;
+    *indexsize = Find_indexsize_and_str_make (ptrBuff);
 
-    unsigned indexsize = Find_indexsize (ptrOneg);
+    printf ("%zd", *indexsize);
 
-    printf ("%u", indexsize);
+    char** Index = (char**) calloc (*indexsize, sizeof (char*));
+    assert (Index != NULL);
 
-    *ptrIndex = (char**) calloc (indexsize, sizeof (char*));
-    assert (*ptrIndex != NULL);
-
-    *ptrIndex[0] = ptrOneg;
-
-    while (i < indexsize)
+    while (i < *indexsize)
     {
-        if (*ptrOneg = '\0')
+        if (*ptrBuff == '\0' && Is_malloc (ptrBuff + 1) == 0)
         {
-            *ptrIndex[i] = ptrOneg;
+            assert (ptrBuff != NULL);
+            Index[i] = ptrBuff + 1;
             i++;
         }
-        ptrOneg++;
+        ptrBuff++;
     }
 
-    return indexsize;
+    return (char**)Index;
 }
 
-int Str_Compare (char* str1, char* str2)
+int Str_Compare (const char* str1, const char* str2)
 {
-    while (*str1 == *str2 && *str1 != '\0' && *str2 != '\0')
+    assert (str1 != NULL);
+    assert (str2 != NULL);
+
+    str1 = Str_platinum (str1);
+    str2 = Str_platinum (str2);
+    while (Small_equal_Big (*str1) == Small_equal_Big (*str2) && *str1 != '\0' && *str2 != '\0')
     {
         str1++;
         str2++;
+        str1 = Str_platinum (str1);
+        str2 = Str_platinum (str2);
     }
 
-    return *str2 - *str1;
+    return Small_equal_Big (*str2) - Small_equal_Big (*str1);
 }
 
-void Str_Sort (char* Index[], unsigned indexsize)
+char* Str_platinum (const char* str)
 {
-    for (int j = 1; j < indexsize; j++)
+    while ((*str > '\0' && *str < 'A') || (*str > 'Z' && *str < 'a') || *str > 'z')
     {
-        for (int i = 0; i < indexsize - j; i++)
+        str++;
+    }
+    return (char*)str;
+}
+
+char Small_equal_Big (char c)
+{
+    if (c >= 'a' && c <= 'z')
+    {
+        return c - ('a' - 'A');
+    }
+    else
+    {
+        return c;
+    }
+}
+
+
+void Str_bubble_Sort (char* Index[], size_t indexsize)
+{
+    for (size_t j = 1; j < indexsize; j++)
+    {
+        for (size_t i = 0; i < indexsize - j; i++)
         {
             assert ((char*)Index[i] != NULL);
             assert ((char*)Index[i + 1] != NULL);
-            if(Str_Compare ((char*)Index[i], (char*)Index[i + 1]) > 0)
+            if(Str_Compare ((char*)Index[i], (char*)Index[i + 1]) < 0)
             {
                 char* temp = (char*)Index [i];
                 Index[i] = Index[i + 1];
@@ -118,34 +159,67 @@ void Str_Sort (char* Index[], unsigned indexsize)
     }
 }
 
-void Output_to_File (char* Index[], unsigned indexsize)
+void Output_to_File (char* Index[], size_t indexsize)
 {
-    FILE* sort_onegin = fopen ("sort_onegin.txt", "w");
+    FILE* sort_buffer = fopen ("sort_hamlet.txt", "w");
 
-    for (int i = 0; i < indexsize; i++)
+    for (size_t i = 0; i < indexsize; i++)
     {
-        fputs ((char*)Index[i], sort_onegin);
-        fputc ('\n', sort_onegin);
+        fputs (Index[i], sort_buffer);
+        fputc ('\n', sort_buffer);
     }
-    fclose (sort_onegin);
+    fclose (sort_buffer);
     free (Index);
 }
 
-unsigned Find_indexsize (char* ptrOneg)
-{
-    unsigned indexsize = 0;
 
-    while (*ptrOneg != '\0')
+
+size_t Find_indexsize_and_str_make (char* ptrBuff)
+{
+    size_t indexsize = 0;
+    size_t strsize = 0;
+
+    while (*ptrBuff != '\0')
     {
-        if (*ptrOneg == '\n')
+        if (*ptrBuff == '\n')
         {
-            *ptrOneg = '\0';
-            indexsize++;
+            *ptrBuff = '\0';
+            if (Is_malloc ((char*)(ptrBuff - strsize + 1)) == 0)
+            {
+                indexsize++;
+            }
+            strsize = 0;
         }
-        ptrOneg++;
+        ptrBuff++;
+        strsize++;
     }
 
-    return indexsize + 1;
+    return indexsize;
 }
+
+int Is_malloc (const char* str)
+{
+    char* ptr = (char*)str;
+    size_t counter_of_bad = 0;
+
+    while (*str != '\0')
+    {
+        if (SYMBOL_IS_USELESS)
+        {
+            counter_of_bad++;
+        }
+        str++;
+    }
+
+    if (counter_of_bad > 0.75*(str - ptr - 1) || (str - ptr) < 7)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 
 
